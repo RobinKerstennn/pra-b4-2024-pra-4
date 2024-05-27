@@ -5,17 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using PRA_B4_FOTOKIOSK.magie;
 
+
+
+//  kiok lijsten printen
 namespace PRA_B4_FOTOKIOSK.models
 {
     public class KioskProduct
     {
-
+        // maak get set
         public string Name { get; set; }
 
         public double Price { get; set; }
 
         public string Description { get; set; }
         
+        
+        // maak lijsten
         public void SetShopPriceList()
         {
             foreach (KioskProduct product in ShopManager.Products)
@@ -45,10 +50,21 @@ namespace PRA_B4_FOTOKIOSK.models
         }
 
     }
-
-    public class OrderdProduct()
+    
+    public class OrderdProduct
     {
         private int PhotoNumber;
-        private string;
+        private string ProductName;
+        private int Total;
+        private double TotalPrice;
+        
+        public OrderdProduct(int PhotoNumber, string ProductName, int Total, double TotalPrice)
+        {
+            this.PhotoNumber = PhotoNumber;
+            this.ProductName = ProductName;
+            this.Total = Total;
+            this.TotalPrice = TotalPrice;
+        }
+        
     }
 }
