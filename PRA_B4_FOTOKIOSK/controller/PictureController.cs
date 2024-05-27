@@ -41,16 +41,20 @@ namespace PRA_B4_FOTOKIOSK.controller
                 {
                     int dayNumber;
                     if (int.TryParse(folderDayNumber[0], out dayNumber))
-                    {
-                        foreach (string file in Directory.GetFiles(dir))
+                        if (dayNumber == day)
                         {
-                            /**
-                             * file string is de file van de foto. Bijvoorbeeld:
-                             * \fotos\0_Zondag\10_05_30_id8824.jpg
-                             */
+                            foreach (string file in Directory.GetFiles(dir))
+                            {
+                                /**
+                                 * file string is de file van de foto. Bijvoorbeeld:
+                                 * \fotos\0_Zondag\10_05_30_id8824.jpg
+                                 */
 
-                            PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                            }
                         }
+                    {
+                       
                     }
                 }
                 
