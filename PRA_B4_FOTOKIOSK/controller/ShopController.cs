@@ -16,6 +16,7 @@ namespace PRA_B4_FOTOKIOSK.controller
 
         public void Start()
         {
+            
             // Stel de prijslijst in aan de rechter kant.
             ShopManager.SetShopPriceList("Prijzen:\nFoto 10x15: €2.55");
 
