@@ -65,6 +65,22 @@ namespace PRA_B4_FOTOKIOSK.models
             this.Total = Total;
             this.TotalPrice = TotalPrice;
         }
+
+        public void AddProduct()
+        {
+            bool isRunning = true;
+            while (isRunning == true)
+            {
+                Console.WriteLine("Welke product wil je?");
+                string product = Console.ReadLine();
+                if (product == "mok")
+                {
+                    Total += 
+                }
+            }
+            
+            
+        }
         
     }
 }
