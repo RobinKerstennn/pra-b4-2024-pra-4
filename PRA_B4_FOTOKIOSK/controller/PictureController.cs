@@ -37,6 +37,7 @@ namespace PRA_B4_FOTOKIOSK.controller
                 var folderName = Path.GetFileName(dir);
                 var folderDayNumber = folderName.Split('_');
 
+                
                 if (folderDayNumber.Length > 1)
                 {
                     int dayNumber;
