@@ -55,21 +55,56 @@ namespace PRA_B4_FOTOKIOSK.controller
             
         }
 
-        // Wordt uitgevoerd wanneer er op de Toevoegen knop is geklikt
-        public void AddButtonClick()
+        
+        private void AddButtonClick(object sender, RoutedEventArgs e)
         {
-            
+            string selectedProduct = ((ComboBoxItem)cbProducts.SelectedItem)?.Content.ToString();
+            if (selectedProduct == null)
+            {
+                MessageBox.Show("Please select a product.");
+                return;
+            }
+
+            double price = 0;
+            if (selectedProduct == "Foto 10x15")
+            {
+                chosenProducts.Add("Foto 10x15");
+                price = 2.55;
+            }
+            else if (selectedProduct == "Mok")
+            {
+                chosenProducts.Add("Mok");
+                price = 4.99;
+            }
+            else if (selectedProduct == "Shirt")
+            {
+                chosenProducts.Add("Shirt");
+                price = 499.99;
+            }
+
+            totalPrice += price;
+            UpdateReceiptAndPrice();
         }
 
-        // Wordt uitgevoerd wanneer er op de Resetten knop is geklikt
-        public void ResetButtonClick()
+        private void ResetButtonClick(object sender, RoutedEventArgs e)
         {
-
+            chosenProducts.Clear();
+            totalPrice = 0;
+            UpdateReceiptAndPrice();
         }
 
-        // Wordt uitgevoerd wanneer er op de Save knop is geklikt
-        public void SaveButtonClick()
+        private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
+            lbReceipt.Content = string.Join(", ", chosenProducts);
+            lbPrices.Content = $"Total Price: {totalPrice:C}";
+        }
+
+        private void UpdateReceiptAndPrice()
+        {
+            lbReceipt.Content = string.Join(", ", chosenProducts);
+            lbPrices.Content = $"Total Price: {totalPrice:C}";
+        }
+        }
         }
 
     }
