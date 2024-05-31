@@ -20,9 +20,10 @@ namespace PRA_B4_FOTOKIOSK.controller
         // Maak een nieuwe lijst met OrderedProducts
         // Wanneer een items wordt besteld (AddButtonClick) voeg een nieuwe OrderedProduct toe aan de lijst
         // UpdateReceiptEnPrice aanpassen zodat de bon print
-        private int countMok = 0;
-        private int countTshirt = 0;
-        private int countFoto = 0;
+        
+        int countMok = 0;
+        int countTshirt = 0;
+        int countFoto = 0;
         private double totalPrice = 0;
         List<OrderdProduct> chosenProducts = new List<OrderdProduct>();
         public void Cashier()
@@ -96,9 +97,10 @@ namespace PRA_B4_FOTOKIOSK.controller
             ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
         }
 
-        public void UpdateReceiptAndPrice()
+        private void UpdateReceiptAndPrice()
         {
-            // Loop door de gekozen producten en werk de bon bij
+            ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
+
             foreach (OrderdProduct chosenProduct in chosenProducts)
             {
                 if (chosenProduct.ProductName == "Mok")
@@ -120,23 +122,25 @@ namespace PRA_B4_FOTOKIOSK.controller
                     countFoto += chosenProduct.Total;
                 }
             }
-            // Werk de bon bij met de totale prijs
-            ShopManager.SetShopReceipt($"Totale prijs is {totalPrice} euro");
+            ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
         }
 
         public void SaveButtonClick()
         {
-            string filePath = @"../text.txt"; // Geef het bestandspad op
-            string number = Convert.ToString(totalPrice); // Geef de tekstinhoud op
-            string content = $"{countMok} mokken, {countFoto} foto's, {countTshirt} shirts, inkomen: {number} euro\n";
-            File.AppendAllText(filePath, content); // Voeg de inhoud toe aan het bestand
+            string filePath = @"../text.txt"; // Specify the file path
+            string number = Convert.ToString(totalPrice); // Specify the text content
+            string content = $"{countMok} mokken {countFoto} fotos {countTshirt} shirts, inkomen {number}\n";
+            File.AppendAllText(filePath, content); // Append the content to the file
         }
+
+        }
+
            
 
         }
         
 
-    }
+   
 
 
     
