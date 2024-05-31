@@ -53,10 +53,10 @@ namespace PRA_B4_FOTOKIOSK.models
     
     public class OrderdProduct
     {
-        private int PhotoNumber;
-        private string ProductName;
-        private int Total;
-        private double TotalPrice;
+        public int PhotoNumber;
+        public string ProductName;
+        public int Total;
+        public double TotalPrice;
         
         public OrderdProduct(int PhotoNumber, string ProductName, int Total, double TotalPrice)
         {

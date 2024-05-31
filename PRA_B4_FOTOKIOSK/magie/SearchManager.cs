@@ -21,6 +21,7 @@ namespace PRA_B4_FOTOKIOSK.magie
             Instance.imgBig.Source = pathToImage(path);
         }
 
+        // Convert path to image
         public static BitmapImage pathToImage(string path)
         {
             var stream = new MemoryStream(File.ReadAllBytes(path));
@@ -33,11 +34,14 @@ namespace PRA_B4_FOTOKIOSK.magie
             return img;
         }
 
+        // zoeken naar text
         public static string GetSearchInput()
         {
             return Instance.tbZoeken.Text;
         }
 
+        
+        // input
         public static void SetSearchImageInfo(string text)
         {
             Instance.lbSearchInfo.Content = text;
@@ -48,6 +52,8 @@ namespace PRA_B4_FOTOKIOSK.magie
             return (string)Instance.lbSearchInfo.Content;
         }
 
+        
+        
         public static void AddSearchImageInfo(string text)
         {
             SetSearchImageInfo(GetSearchImageInfo() + text);

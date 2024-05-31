@@ -67,7 +67,7 @@ namespace PRA_B4_FOTOKIOSK.controller
         }
 
         
-        private void AddButtonClick(object sender, RoutedEventArgs e)
+        public void AddButtonClick()
         {
 
             KioskProduct selectedProduct = ShopManager.GetSelectedProduct();
@@ -84,26 +84,50 @@ namespace PRA_B4_FOTOKIOSK.controller
             UpdateReceiptAndPrice();
         }
 
-        private void ResetButtonClick(object sender, RoutedEventArgs e)
+        public void ResetButtonClick()
         {
             chosenProducts.Clear();
              totalPrice = 0;
             UpdateReceiptAndPrice();
         }
 
-        private void SaveButtonClick(object sender, RoutedEventArgs e)
+        public void SaveButtonClick()
         {
-            
-            
+            string path = "text.txt";   
+            if (File.Exists(path))
+            {
+                //writes to file
+                System.IO.File.WriteAllText(path,"Text to add to the file\n");
+            }
+            else
+            {
+                // Create the file.
+                System.IO.File.WriteAllText(path, "Text to add to the file\n");
+
+
+            }
+            // Open the stream and read it back.
+            using (StreamReader sr = File.OpenText(path))
+            {
+                string s = "";
+                while ((s = sr.ReadLine()) != null)
+                {
+                    Console.WriteLine(s);
+                }
+            }
             //ShopManager.SetShopReceipt(chosenProducts);
             //ShopManager.AddShopReceipt();
-            ShopManager.SetShopPriceList($"Total Price: {totalPrice:C}");
+           // ShopManager.SetShopPriceList($"Total Price: {price:C}");
         }
 
         private void UpdateReceiptAndPrice()
         {
-            ShopManager.SetShopReceipt(string.Join(", ", chosenProducts));
+            foreach (OrderdProduct chosenProduct in chosenProducts)
+            {
+                ShopManager.AddShopReceipt($"x{chosenProduct.Total} {chosenProduct.ProductName}\n");
+            }
             //ShopManager.SetShopPriceList($"Total Price: {totalPrice:C}");
+            
         }
 
 

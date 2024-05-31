@@ -19,11 +19,22 @@ namespace PRA_B4_FOTOKIOSK.controller
         // Start methode die wordt aangeroepen wanneer de zoek pagina opent.
         public void Start()
         {
+            ShopManager.Instance = Window;
+
+
+            // Update de fotos
+            
+        }
+
+        // Wordt uitgevoerd wanneer er op de Zoeken knop is geklikt
+        public void SearchButtonClick()
+        {
             int day;
             if (int.TryParse(SearchManager.GetSearchInput(), out day))
             {
                 // Initializeer de lijst met foto's
-                //PicturesToDisplay.Clear();
+                //    SearchManager.bbjb
+
 
                 // Loop door de directories om foto's te laden
                 foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
@@ -38,24 +49,15 @@ namespace PRA_B4_FOTOKIOSK.controller
                         {
                             foreach (string file in Directory.GetFiles(dir))
                             {
-               //                 PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                //                 PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
                             }
                         }
                     }
                 }
 
                 // Update de foto's op het scherm
-             //   UpdateDisplayedPictures();
+                //   UpdateDisplayedPictures();
             }
-
-            // Update de fotos
-            
-        }
-
-        // Wordt uitgevoerd wanneer er op de Zoeken knop is geklikt
-        public void SearchButtonClick()
-        {
-            
         }
 
     }
