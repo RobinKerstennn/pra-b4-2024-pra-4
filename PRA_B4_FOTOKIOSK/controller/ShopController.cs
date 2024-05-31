@@ -21,7 +21,7 @@ namespace PRA_B4_FOTOKIOSK.controller
         // UpdateReceiptEnPrice aanpassen zodat de bon print
 
         private double totalPrice = 0;
-        List<string> chosenProducts = new List<string>();
+        List<OrderdProduct> chosenProducts = new List<OrderdProduct>();
         public void Cashier()
         {
             
@@ -69,30 +69,18 @@ namespace PRA_B4_FOTOKIOSK.controller
         
         private void AddButtonClick(object sender, RoutedEventArgs e)
         {
-            
-            string selectedProduct = ((ComboBoxItem)cbProducts.SelectedItem)?.Content.ToString();
+
+            KioskProduct selectedProduct = ShopManager.GetSelectedProduct();
             if (selectedProduct == null)
             {
                 MessageBox.Show("Please select a product.");
                 return;
             }
 
-            double price = 0;
-            if (selectedProduct == "Foto 10x15")
-            {
-                chosenProducts.Add("Foto 10x15");
-                price = 2.55;
-            }
-            else if (selectedProduct == "Mok")
-            {
-                chosenProducts.Add("Mok");
-                price = 4.99;
-            }
-            else if (selectedProduct == "Shirt")
-            {
-                chosenProducts.Add("Shirt");
-                price = 499.99;
-            }
+            OrderdProduct product = new OrderdProduct((int)ShopManager.GetFotoId(), selectedProduct.Name,
+                (int)ShopManager.GetAmount(), (int)ShopManager.GetAmount() + selectedProduct.Price);
+
+            chosenProducts.Add(product);
             UpdateReceiptAndPrice();
         }
 
@@ -105,7 +93,10 @@ namespace PRA_B4_FOTOKIOSK.controller
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
-            ShopManager.SetShopReceipt();
+            
+            
+            //ShopManager.SetShopReceipt(chosenProducts);
+            //ShopManager.AddShopReceipt();
             ShopManager.SetShopPriceList($"Total Price: {totalPrice:C}");
         }
 
