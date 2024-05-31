@@ -6,12 +6,22 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using PRA_B4_FOTOKIOSK;
 
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
     public class ShopController
     {
+        
+        // Maak een nieuwe lijst met OrderedProducts
+        // Wanneer een items wordt besteld (AddButtonClick) voeg een nieuwe OrderedProduct toe aan de lijst
+        // UpdateReceiptEnPrice aanpassen zodat de bon print
+
+        private double totalPrice = 0;
+        List<string> chosenProducts = new List<string>();
         public void Cashier()
         {
             
@@ -19,6 +29,7 @@ namespace PRA_B4_FOTOKIOSK.controller
                 OrderdProduct order = new OrderdProduct(1, "Foto", 0, 5.59);
                 OrderdProduct order2 = new OrderdProduct(1, "Mok", 0, 4.99);
                 OrderdProduct order3 = new OrderdProduct(1, "Tshirt", 0, 499.99);
+                
                 Console.WriteLine("Wil je foto producten??");
                 string product = Console.ReadLine();
                 if (product == "ja")
@@ -37,7 +48,7 @@ namespace PRA_B4_FOTOKIOSK.controller
 
         public void Start()
         {
-            
+            List<string> chosenProducts = new List<string>();
             // Stel de prijslijst in aan de rechter kant.
             ShopManager.SetShopPriceList("Prijzen:\nFoto 10x15: €2.55");
 
@@ -58,6 +69,7 @@ namespace PRA_B4_FOTOKIOSK.controller
         
         private void AddButtonClick(object sender, RoutedEventArgs e)
         {
+            
             string selectedProduct = ((ComboBoxItem)cbProducts.SelectedItem)?.Content.ToString();
             if (selectedProduct == null)
             {
@@ -81,31 +93,28 @@ namespace PRA_B4_FOTOKIOSK.controller
                 chosenProducts.Add("Shirt");
                 price = 499.99;
             }
-
-            totalPrice += price;
             UpdateReceiptAndPrice();
         }
 
         private void ResetButtonClick(object sender, RoutedEventArgs e)
         {
             chosenProducts.Clear();
-            totalPrice = 0;
+             totalPrice = 0;
             UpdateReceiptAndPrice();
         }
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
-            lbReceipt.Content = string.Join(", ", chosenProducts);
-            lbPrices.Content = $"Total Price: {totalPrice:C}";
+            ShopManager.SetShopReceipt();
+            ShopManager.SetShopPriceList($"Total Price: {totalPrice:C}");
         }
 
         private void UpdateReceiptAndPrice()
         {
-            lbReceipt.Content = string.Join(", ", chosenProducts);
-            lbPrices.Content = $"Total Price: {totalPrice:C}";
+            ShopManager.SetShopReceipt(string.Join(", ", chosenProducts));
+            //ShopManager.SetShopPriceList($"Total Price: {totalPrice:C}");
         }
-        }
-        }
+
 
     }
 }
