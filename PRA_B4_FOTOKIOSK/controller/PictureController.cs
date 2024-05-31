@@ -38,10 +38,10 @@ namespace PRA_B4_FOTOKIOSK.controller
                  * \fotos\0_Zondag
                  */
                 var folderName = Path.GetFileName(dir);
-                var folderDayNumber = folderName.Split('_');
-
+                var folderDayNumber = folderName.Split('_' );
                 /*string fileName = Path.GetFileNameWithoutExtension(@"../../../fotos");
                 var parts = fileName.Split("_");*/
+
 
                 
                 if (folderDayNumber.Length > 1)
