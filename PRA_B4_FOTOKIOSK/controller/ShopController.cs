@@ -28,6 +28,7 @@ namespace PRA_B4_FOTOKIOSK.controller
             
             // Update dropdown met producten
             ShopManager.UpdateDropDownProducts();
+
         }
 
         // Wordt uitgevoerd wanneer er op de Toevoegen knop is geklikt
