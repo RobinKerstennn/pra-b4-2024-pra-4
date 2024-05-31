@@ -61,11 +61,6 @@ namespace PRA_B4_FOTOKIOSK.controller
             
             // Update dropdown met producten
             ShopManager.UpdateDropDownProducts();
-<<<<<<< HEAD
-
-        }
-=======
->>>>>>> 0e7622f48278ca5d0d094dc5941f74756d7eb661
 
 
             
