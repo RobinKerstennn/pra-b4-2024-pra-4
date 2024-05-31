@@ -25,6 +25,9 @@ namespace PRA_B4_FOTOKIOSK.controller
             var now = DateTime.Now;
             int day = (int)now.DayOfWeek;
 
+            DateTime lowerBound = now.AddMinutes(-30);
+            DateTime upperBound = now.AddMinutes(-2);
+
             // Initializeer de lijst met fotos
             // WAARSCHUWING. ZONDER FILTER LAADT DIT ALLES!
             // foreach is een for-loop die door een array loopt
@@ -35,7 +38,10 @@ namespace PRA_B4_FOTOKIOSK.controller
                  * \fotos\0_Zondag
                  */
                 var folderName = Path.GetFileName(dir);
-                var folderDayNumber = folderName.Split('_');
+                var folderDayNumber = folderName.Split('_' );
+                /*string fileName = Path.GetFileNameWithoutExtension(@"../../../fotos");
+                var parts = fileName.Split("_");*/
+
 
                 
                 if (folderDayNumber.Length > 1)
@@ -50,8 +56,28 @@ namespace PRA_B4_FOTOKIOSK.controller
                                  * file string is de file van de foto. Bijvoorbeeld:
                                  * \fotos\0_Zondag\10_05_30_id8824.jpg
                                  */
+                                string fileName = Path.GetFileNameWithoutExtension(file);
+                                var parts = fileName.Split("_");
 
-                                PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                if (parts.Length > 0)
+                                {
+                                    if (int.TryParse(parts[0], out int hour) &&
+                                        int.TryParse(parts[1], out int minute) &&
+                                        int.TryParse(parts[2], out int seconds))
+                                    {
+                                        DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, seconds);
+
+                                        if (photoTime > now)
+                                        {
+                                            photoTime = photoTime.AddDays(-1);
+                                        }
+
+                                        if (photoTime >= lowerBound && photoTime <= upperBound)
+                                        {
+                                            PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                        }
+                                    }
+                                }
                             }
                         }
                     {
@@ -68,7 +94,7 @@ namespace PRA_B4_FOTOKIOSK.controller
         // Wordt uitgevoerd wanneer er op de Refresh knop is geklikt
         public void RefreshButtonClick()
         {
-
+            
         }
 
     }
