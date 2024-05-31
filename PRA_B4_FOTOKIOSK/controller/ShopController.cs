@@ -89,7 +89,8 @@ namespace PRA_B4_FOTOKIOSK.controller
         {
             chosenProducts.Clear();
              totalPrice = 0;
-            UpdateReceiptAndPrice();
+            //UpdateReceiptAndPrice();
+            ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
         }
 
         public void SaveButtonClick()
@@ -122,9 +123,13 @@ namespace PRA_B4_FOTOKIOSK.controller
         }
 
         private void UpdateReceiptAndPrice()
+        
         {
+            // forloop maken
+            ShopManager.AddShopReceipt($"totale price is {totalPrice} euro");
             foreach (OrderdProduct chosenProduct in chosenProducts)
             {
+                //keuze
                 if (chosenProduct.ProductName == "Mok")
                 {
                     ShopManager.AddShopReceipt($"x{chosenProduct.Total} {chosenProduct.ProductName} price 4.99 euro\n");
@@ -137,10 +142,7 @@ namespace PRA_B4_FOTOKIOSK.controller
                 }
                 else if(chosenProduct.ProductName == "Tshirt")
                 {
-                    ShopManager.AddShopReceipt($"x{chosenProduct.Total} {chosenProduct.ProductName} price 499.99 euro\n");
                     double totaal = chosenProduct.Total * 499.99;
-                    
-                    ShopManager.AddShopReceipt($"x {chosenProduct.ProductName} {totaal}\n");
                     
                     totalPrice += totaal;
                 }
@@ -148,14 +150,12 @@ namespace PRA_B4_FOTOKIOSK.controller
                 {
                     double totaal = chosenProduct.Total * 5.59;
                     
-                    ShopManager.AddShopReceipt($"x {chosenProduct.ProductName} {totaal}\n");
-                    
                     totalPrice += totaal;
                 }
-                
+                ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
             }
             
-            ShopManager.AddShopReceipt($"totale price is {totalPrice} euro");
+            
         }
 
 

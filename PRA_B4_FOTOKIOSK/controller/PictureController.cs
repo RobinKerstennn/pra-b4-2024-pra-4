@@ -52,10 +52,7 @@ namespace PRA_B4_FOTOKIOSK.controller
                         {
                             foreach (string file in Directory.GetFiles(dir))
                             {
-                                /**
-                                 * file string is de file van de foto. Bijvoorbeeld:
-                                 * \fotos\0_Zondag\10_05_30_id8824.jpg
-                                 */
+                                
                                 string fileName = Path.GetFileNameWithoutExtension(file);
                                 var parts = fileName.Split("_");
 

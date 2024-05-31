@@ -13,52 +13,78 @@ namespace PRA_B4_FOTOKIOSK.controller
     {
         // De window die we laten zien op het scherm
         public static Home Window { get; set; }
-        
 
-        
+
+
         // Start methode die wordt aangeroepen wanneer de zoek pagina opent.
         public void Start()
         {
             ShopManager.Instance = Window;
 
 
-            // Update de fotos
-            
+
         }
 
-        // Wordt uitgevoerd wanneer er op de Zoeken knop is geklikt
         public void SearchButtonClick()
         {
-            int day;
-            if (int.TryParse(SearchManager.GetSearchInput(), out day))
+            // plaat een if-statement
+            // plaats een foreach loop
+            var now = DateTime.Now;
+            int day = (int)now.DayOfWeek;
+
+            DateTime lowerBound = now.AddMinutes(-30);
+            DateTime upperBound = now.AddMinutes(-2);
+
+            // Initializeer de lijst met fotos
+            // WAARSCHUWING. ZONDER FILTER LAADT DIT ALLES!
+            // foreach is een for-loop die door een array loopt
+            foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
             {
-                // Initializeer de lijst met foto's
-                //    SearchManager.bbjb
+                var folderName = Path.GetFileName(dir);
+                var folderDayNumber = folderName.Split('_');
 
-
-                // Loop door de directories om foto's te laden
-                foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
+                if (folderDayNumber.Length > 1)
                 {
-                    var folderName = Path.GetFileName(dir);
-                    var folderDayNumber = folderName.Split('_');
-
-                    if (folderDayNumber.Length > 1)
-                    {
-                        int dayNumber;
-                        if (int.TryParse(folderDayNumber[0], out dayNumber) && dayNumber == day)
+                    int dayNumber;
+                    if (int.TryParse(folderDayNumber[0], out dayNumber))
+                        if (dayNumber == day)
                         {
                             foreach (string file in Directory.GetFiles(dir))
                             {
-                                //                 PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+
+                                string fileName = Path.GetFileNameWithoutExtension(file);
+                                var parts = fileName.Split("_");
+
+                                if (parts.Length > 0)
+                                {
+                                    if (int.TryParse(parts[0], out int hour) &&
+                                        int.TryParse(parts[1], out int minute) &&
+                                        int.TryParse(parts[2], out int seconds))
+                                    {
+                                        DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, seconds);
+
+                                        DateTime searchInputDateTime;
+                                        bool isParsed = DateTime.TryParse(SearchManager.GetSearchInput(), out searchInputDateTime);
+
+                                        if (isParsed && searchInputDateTime == photoTime)
+                                        {
+                                            SearchManager.AddSearchImageInfo(@"../../../fotos");
+                                        }
+
+                                    }
+                                }
                             }
                         }
+
+                    {
+
                     }
                 }
 
-                // Update de foto's op het scherm
-                //   UpdateDisplayedPictures();
-            }
-        }
 
+            }
+
+
+        }
     }
 }
