@@ -50,14 +50,15 @@ namespace PRA_B4_FOTOKIOSK.controller
         {
             List<string> chosenProducts = new List<string>();
             // Stel de prijslijst in aan de rechter kant.
-            ShopManager.SetShopPriceList("Prijzen:\nFoto 10x15: €2.55");
+            ShopManager.SetShopPriceList("Prijzen:\nFoto 10x15: €2.55\nMok: €49.99\nTshirt: €499.99");
 
             // Stel de bon in onderaan het scherm
             ShopManager.SetShopReceipt("Eindbedrag\n€");
 
             // Vul de productlijst met producten
             ShopManager.Products.Add(new KioskProduct() { Name = "Foto 10x15" });
-            
+            ShopManager.Products.Add(new KioskProduct() { Name = "Mok" });
+            ShopManager.Products.Add(new KioskProduct() { Name = "Tshirt" });
             
             // Update dropdown met producten
             ShopManager.UpdateDropDownProducts();
@@ -124,10 +125,37 @@ namespace PRA_B4_FOTOKIOSK.controller
         {
             foreach (OrderdProduct chosenProduct in chosenProducts)
             {
-                ShopManager.AddShopReceipt($"x{chosenProduct.Total} {chosenProduct.ProductName}\n");
+                if (chosenProduct.ProductName == "Mok")
+                {
+                    ShopManager.AddShopReceipt($"x{chosenProduct.Total} {chosenProduct.ProductName} price 4.99 euro\n");
+                    double totaal = chosenProduct.Total * 4.99;
+                    
+                    ShopManager.AddShopReceipt($"x {chosenProduct.ProductName} {totaal}\n");
+                    
+                    totalPrice += totaal;
+                    
+                }
+                else if(chosenProduct.ProductName == "Tshirt")
+                {
+                    ShopManager.AddShopReceipt($"x{chosenProduct.Total} {chosenProduct.ProductName} price 499.99 euro\n");
+                    double totaal = chosenProduct.Total * 499.99;
+                    
+                    ShopManager.AddShopReceipt($"x {chosenProduct.ProductName} {totaal}\n");
+                    
+                    totalPrice += totaal;
+                }
+                else if(chosenProduct.ProductName == "Foto 10x15")
+                {
+                    double totaal = chosenProduct.Total * 5.59;
+                    
+                    ShopManager.AddShopReceipt($"x {chosenProduct.ProductName} {totaal}\n");
+                    
+                    totalPrice += totaal;
+                }
+                
             }
-            //ShopManager.SetShopPriceList($"Total Price: {totalPrice:C}");
             
+            ShopManager.AddShopReceipt($"totale price is {totalPrice} euro");
         }
 
 
