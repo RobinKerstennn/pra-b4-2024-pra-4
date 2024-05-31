@@ -95,7 +95,7 @@ namespace PRA_B4_FOTOKIOSK.controller
 
         public void SaveButtonClick()
         {
-            string path = "text.txt";   
+            string path = "text.txt";
             if (File.Exists(path))
             {
                 //writes to file
@@ -126,6 +126,9 @@ namespace PRA_B4_FOTOKIOSK.controller
         
         {
             // forloop maken
+            int countMok = 0;
+            int countTshirt = 0;
+            int countFoto = 0;
             ShopManager.AddShopReceipt($"totale price is {totalPrice} euro");
             foreach (OrderdProduct chosenProduct in chosenProducts)
             {
@@ -138,21 +141,32 @@ namespace PRA_B4_FOTOKIOSK.controller
                     ShopManager.AddShopReceipt($"x {chosenProduct.ProductName} {totaal}\n");
                     
                     totalPrice += totaal;
-                    
+                    countMok += chosenProduct.Total;
+
                 }
-                else if(chosenProduct.ProductName == "Tshirt")
+                else if (chosenProduct.ProductName == "Tshirt")
                 {
                     double totaal = chosenProduct.Total * 499.99;
-                    
+
                     totalPrice += totaal;
+                    countTshirt += chosenProduct.Total;
                 }
+
                 else if(chosenProduct.ProductName == "Foto 10x15")
                 {
                     double totaal = chosenProduct.Total * 5.59;
+
+                    
                     
                     totalPrice += totaal;
+                    countFoto += chosenProduct.Total;
                 }
                 ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
+                string filePath = @"../text.txt"; // Specify the file path
+                string number = Convert.ToString(totalPrice);// Specify the text content
+                string content = $"{countMok} mokken {countFoto} fotos {countTshirt} shirts,  inkomen {number}\n";
+                    
+                File.AppendAllText(filePath, content); // Append the content to the file
             }
             
             

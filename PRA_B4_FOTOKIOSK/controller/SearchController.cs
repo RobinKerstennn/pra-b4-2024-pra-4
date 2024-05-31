@@ -68,7 +68,7 @@ namespace PRA_B4_FOTOKIOSK.controller
 
                                         if (isParsed && searchInputDateTime == photoTime)
                                         {
-                                            SearchManager.AddSearchImageInfo(@"../../../fotos");
+                                            SearchManager.SetPicture(@"../../../fotos");
                                         }
 
                                     }
