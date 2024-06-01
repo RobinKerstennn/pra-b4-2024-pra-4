@@ -122,7 +122,7 @@ namespace PRA_B4_FOTOKIOSK.controller
                     countFoto += chosenProduct.Total;
                 }
             }
-            ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
+            ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}");
         }
 
         public void SaveButtonClick()
