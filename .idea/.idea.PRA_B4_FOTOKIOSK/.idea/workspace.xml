@@ -44,9 +44,9 @@
 }</component>
   <component name="RunManager">
     <configuration name="PRA_B4_FOTOKIOSK" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/PRA_B4_FOTOKIOSK/bin/Debug/net6.0-windows/PRA_B4_FOTOKIOSK.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PRA_B4_FOTOKIOSK/bin/Debug/net6.0-windows" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
@@ -56,7 +56,7 @@
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
       <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
+      <option name="PROJECT_TFM" value="net6.0-windows" />
       <method v="2">
         <option name="Build" />
       </method>
@@ -75,6 +75,8 @@
       <workItem from="1717008010343" duration="272000" />
       <workItem from="1717051041802" duration="15511000" />
       <workItem from="1717144721952" duration="23048000" />
+      <workItem from="1717323752142" duration="8670000" />
+      <workItem from="1717399581701" duration="346000" />
     </task>
     <servers />
   </component>
