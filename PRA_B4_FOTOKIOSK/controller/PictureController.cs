@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
@@ -15,35 +17,17 @@ namespace PRA_B4_FOTOKIOSK.controller
         // The list of photos to display
         public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
 
-        // Start method called when the photo page opens
+        // Start method that is called when the photo page opens.
         public void Start()
         {
             var now = DateTime.Now;
             int day = (int)now.DayOfWeek;
-
             DateTime lowerBound = now.AddMinutes(-30);
             DateTime upperBound = now.AddMinutes(-2);
-
             var directoryPath = @"../../../fotos";
 
-            // Lists to store photos for each camera
-            var camera1Photos = new List<KioskPhoto>();
-            var camera2Photos = new List<KioskPhoto>();
-
-            // Load photos from the main directory
-            LoadPhotosFromDirectory(directoryPath, day, lowerBound, upperBound, camera1Photos, camera2Photos);
-
-            // Combine and sort the photos for display
-            PicturesToDisplay.AddRange(camera1Photos);
-            PicturesToDisplay.AddRange(camera2Photos);
-            PicturesToDisplay = PicturesToDisplay.OrderBy(p => p.PhotoTime).ToList();
-
-            // Update the photos on the screen
-            PictureManager.UpdatePictures(PicturesToDisplay);
-        }
-
-        private void LoadPhotosFromDirectory(string directoryPath, int day, DateTime lowerBound, DateTime upperBound, List<KioskPhoto> camera1Photos, List<KioskPhoto> camera2Photos)
-        {
+            // Initialize the list of photos
+            // WARNING. WITHOUT FILTER THIS LOADS EVERYTHING!
             foreach (string dir in Directory.GetDirectories(directoryPath))
             {
                 var folderName = Path.GetFileName(dir);
@@ -53,65 +37,34 @@ namespace PRA_B4_FOTOKIOSK.controller
                 {
                     foreach (string file in Directory.GetFiles(dir))
                     {
-                        var fileName = Path.GetFileNameWithoutExtension(file);
-                        var parts = fileName.Split('_');
-
-                        if (parts.Length >= 4 && int.TryParse(parts[0], out int hour) &&
-                            int.TryParse(parts[1], out int minute) && int.TryParse(parts[2], out int second))
+                        var fileNameParts = Path.GetFileNameWithoutExtension(file).Split('_');
+                        if (fileNameParts.Length >= 3 && int.TryParse(fileNameParts[0], out int hour) &&
+                            int.TryParse(fileNameParts[1], out int minute) && int.TryParse(fileNameParts[2], out int second))
                         {
-                            string id = parts[3]; // Extract the ID part
-                            DateTime photoTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
+                            DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, second);
 
-                            if (photoTime > DateTime.Now)
+                            if (photoTime > now)
                             {
                                 photoTime = photoTime.AddDays(-1);
                             }
 
                             if (photoTime >= lowerBound && photoTime <= upperBound)
                             {
-                                var photo = new KioskPhoto() { Id = 0, Source = file, PhotoTime = photoTime };
-
-                                if (IsCamera1(photoTime))
-                                {
-                                    camera1Photos.Add(photo);
-                                }
-                                else
-                                {
-                                    camera2Photos.Add(photo);
-                                }
+                                PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
                             }
                         }
                     }
                 }
             }
+            // Update the photos
+            PictureManager.UpdatePictures(PicturesToDisplay);
         }
 
-        private bool IsCamera1(DateTime photoTime)
-        {
-            // Photos taken at xx:xx:01 and xx:xx:30 (±2 seconds) go to camera1Photos
-            var seconds = photoTime.Second;
-            return (seconds >= 1 && seconds <= 6) || (seconds >= 55 && seconds <= 65);
-        }
-
-        // Method executed when the Refresh button is clicked
+        // Executed when the Refresh button is clicked
         public void RefreshButtonClick()
         {
-            // Refresh functionality can be implemented here
-        }
-    }
-
-    public class KioskPhoto
-    {
-        public int Id { get; set; }
-        public string Source { get; set; }
-        public DateTime PhotoTime { get; set; } // Added to store the photo time
-    }
-
-    public static class PictureManager
-    {
-        public static void UpdatePictures(List<KioskPhoto> pictures)
-        {
-            // Logic to update pictures on the screen
+            // Clear the current list of pictures and reload
+            PicturesToDisplay.Clear();
         }
     }
 }
