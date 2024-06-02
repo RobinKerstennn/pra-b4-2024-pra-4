@@ -99,6 +99,32 @@ namespace PRA_B4_FOTOKIOSK.controller
 
         private void UpdateReceiptAndPrice()
         {
+            // ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
+
+            // foreach (OrderdProduct chosenProduct in chosenProducts)
+            //{
+            //  if (chosenProduct.ProductName == "Mok")
+            //{
+            //  double totaal = chosenProduct.Total * 4.99;
+            //totalPrice += totaal;
+            //countMok += chosenProduct.Total;
+            //}
+            //else if (chosenProduct.ProductName == "Tshirt")
+            //{
+            //  double totaal = chosenProduct.Total * 499.99;
+            //totalPrice += totaal;
+            //countTshirt += chosenProduct.Total;
+            //}
+            //else if (chosenProduct.ProductName == "Foto 10x15")
+            //{
+            //  double totaal = chosenProduct.Total * 5.59;
+            //totalPrice += totaal;
+            //countFoto += chosenProduct.Total;
+            //}
+            //}
+            //ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}");
+            double totalPrice = 0;
+
             ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
 
             foreach (OrderdProduct chosenProduct in chosenProducts)
@@ -108,20 +134,25 @@ namespace PRA_B4_FOTOKIOSK.controller
                     double totaal = chosenProduct.Total * 4.99;
                     totalPrice += totaal;
                     countMok += chosenProduct.Total;
+                    
+
                 }
-                else if (chosenProduct.ProductName == "Tshirt")
+                if (chosenProduct.ProductName == "Tshirt")
                 {
                     double totaal = chosenProduct.Total * 499.99;
                     totalPrice += totaal;
                     countTshirt += chosenProduct.Total;
+                    
                 }
-                else if (chosenProduct.ProductName == "Foto 10x15")
+                if (chosenProduct.ProductName == "Foto 10x15")
                 {
                     double totaal = chosenProduct.Total * 5.59;
                     totalPrice += totaal;
                     countFoto += chosenProduct.Total;
-                }
+                    
+               }
             }
+
             ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}");
         }
 

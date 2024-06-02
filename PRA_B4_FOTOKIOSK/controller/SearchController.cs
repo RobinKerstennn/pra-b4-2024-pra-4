@@ -9,82 +9,78 @@ using System.Threading.Tasks;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
-    public class SearchController
-    {
-        // De window die we laten zien op het scherm
-        public static Home Window { get; set; }
-
-
-
-        // Start methode die wordt aangeroepen wanneer de zoek pagina opent.
-        public void Start()
+     try
         {
-            ShopManager.Instance = Window;
-
-
-
-        }
-
-        public void SearchButtonClick()
-        {
-            // plaat een if-statement
-            // plaats een foreach loop
-            var now = DateTime.Now;
-            int day = (int)now.DayOfWeek;
-
-            DateTime lowerBound = now.AddMinutes(-30);
-            DateTime upperBound = now.AddMinutes(-2);
-
-            // Initializeer de lijst met fotos
-            // WAARSCHUWING. ZONDER FILTER LAADT DIT ALLES!
-            // foreach is een for-loop die door een array loopt
-            foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
+            // Controleer of SearchManager.Instance niet null is voordat je het gebruikt
+            if (SearchManager.Instance != null && !string.IsNullOrEmpty(time))
             {
-                var folderName = Path.GetFileName(dir);
-                var folderDayNumber = folderName.Split('_');
-
-                if (folderDayNumber.Length > 1)
+                // Parse de invoertijdreeks naar een DateTime-object
+                if (DateTime.TryParseExact(time, "HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime searchTime))
                 {
-                    int dayNumber;
-                    if (int.TryParse(folderDayNumber[0], out dayNumber))
-                        if (dayNumber == day)
+                    string directoryPath = @"C:\Your\Photo\Directory";
+
+                    // Zoek naar foto's in de map
+                    bool photoFound = false;
+                    foreach (string file in Directory.GetFiles(directoryPath, "*.jpg"))
+                    {
+                        // Extraheren van de tijd uit de bestandsnaam
+                        string fileName = Path.GetFileNameWithoutExtension(file);
+                        if (fileName.Length >= 8 && int.TryParse(fileName.Substring(0, 2), out int hour) &&
+                            int.TryParse(fileName.Substring(3, 2), out int minute) &&
+                            int.TryParse(fileName.Substring(6, 2), out int second))
                         {
-                            foreach (string file in Directory.GetFiles(dir))
+                            DateTime photoTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
+
+                            // Controleer of de fototijd overeenkomt met de zoekopdrachtijd
+                            if (photoTime == searchTime)
                             {
-
-                                string fileName = Path.GetFileNameWithoutExtension(file);
-                                var parts = fileName.Split("_");
-
-                                if (parts.Length > 0)
-                                {
-                                    if (int.TryParse(parts[0], out int hour) &&
-                                        int.TryParse(parts[1], out int minute) &&
-                                        int.TryParse(parts[2], out int seconds))
-                                    {
-                                        DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, seconds);
-
-                                        DateTime searchInputDateTime;
-                                        bool isParsed = DateTime.TryParse(SearchManager.GetSearchInput(), out searchInputDateTime);
-
-                                        if (isParsed && searchInputDateTime == photoTime)
-                                        {
-                                            SearchManager.SetPicture(@"../../../fotos");
-                                        }
-
-                                    }
-                                }
+                                // Laat de foto zien
+                                ShowPhoto(file);
+                                photoFound = true;
+                                break; // Stop met zoeken nadat de eerste overeenkomende foto is gevonden
                             }
                         }
+                    }
 
+                    if (!photoFound)
                     {
-
+                        Console.WriteLine("Geen foto gevonden voor het opgegeven tijdstip.");
                     }
                 }
-
-
+                else
+                {
+                    Console.WriteLine("Ongeldige tijdnotatie. Gebruik alstublieft 'HH:mm:ss'.");
+                }
             }
+            else
+            {
+                // SearchManager.Instance of time is null of leeg, toon het juiste bericht
+                Console.WriteLine("SearchManager.Instance of time is null of leeg. Zorg ervoor dat ze correct zijn geïnitialiseerd.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Er is een fout opgetreden: " + ex.Message);
+        }
+    }
 
+    private static void ShowPhoto(string filePath)
+    {
+        // Laad de afbeelding en laat deze zien
+        BitmapImage image = new BitmapImage();
+        image.BeginInit();
+        image.CacheOption = BitmapCacheOption.OnLoad;
+        image.UriSource = new Uri(filePath);
+        image.EndInit();
 
+        // Controleer of Image control is geïnitialiseerd en stel de bron in
+        if (SearchManager.Instance != null && SearchManager.Instance.imgBig != null)
+        {
+            SearchManager.Instance.imgBig.Source = image;
+        }
+        else
+        {
+            Console.WriteLine("SearchManager.Instance of imgBig is null. Zorg ervoor dat ze correct zijn geïnitialiseerd.");
         }
     }
 }
