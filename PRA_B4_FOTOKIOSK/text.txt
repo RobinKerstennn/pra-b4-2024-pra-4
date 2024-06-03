@@ -6,3 +6,5 @@
 0 mokken 1 fotos 0 shirts, inkomen 0
 3 mokken 2 fotos 1 shirts, inkomen 0
 3 mokken 2 fotos 1 shirts, inkomen 0
+0 mokken 0 fotos 1 shirts, inkomen 0
+0 mokken 1 fotos 0 shirts, inkomen 2,59

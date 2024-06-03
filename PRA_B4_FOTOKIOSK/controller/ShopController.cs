@@ -24,6 +24,7 @@ namespace PRA_B4_FOTOKIOSK.controller
         int countMok = 0;
         int countTshirt = 0;
         int countFoto = 0;
+        double countMoney = 0;
         private double totalPrice = 0;
         List<OrderdProduct> chosenProducts = new List<OrderdProduct>();
         public void Cashier()
@@ -155,13 +156,14 @@ namespace PRA_B4_FOTOKIOSK.controller
                 }
             }
 
+            countMoney += totalPrice;
             ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}");
         }
         public void SaveButtonClick()
         {
             string filePath = @"../../../text.txt"; // Specify the file path
             string number = Convert.ToString(totalPrice); // Specify the text content
-            string content = $"{countMok} mokken {countFoto} fotos {countTshirt} shirts, inkomen {totalPrice}\n";
+            string content = $"{countMok} mokken {countFoto} fotos {countTshirt} shirts, inkomen {countMoney} euro\n";
             File.AppendAllText(filePath, content); // Append the content to the file
         }
     }

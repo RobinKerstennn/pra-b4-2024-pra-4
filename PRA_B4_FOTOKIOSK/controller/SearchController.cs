@@ -20,6 +20,11 @@ namespace PRA_B4_FOTOKIOSK.controller
 
         public void SearchButtonClick()
         {
+            string input = SearchManager.GetSearchInput();
+            DateTime inputValue;
+            string[] formats = { "MM/dd/yyyy", "dd-MM-yyyy" }; // example formats
+
+            bool isValid = DateTime.TryParseExact(input, formats, null, System.Globalization.DateTimeStyles.None, out inputValue);
             try
             {
                 var searchTimeInput = SearchManager.GetSearchInput();
@@ -38,11 +43,10 @@ namespace PRA_B4_FOTOKIOSK.controller
                                 int.TryParse(fileName.Substring(6, 2), out int second))
                             {
                                 DateTime photoTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
-                                if (photoTime == searchTime)
+                                if (photoTime == inputValue) 
                                 {
-                                    ShowPhoto(file);
-                                    photoFound = true;
-                                    break;
+                                    PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                    
                                 }
                             }
                         }
