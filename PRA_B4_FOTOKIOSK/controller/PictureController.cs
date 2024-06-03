@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
@@ -23,12 +21,19 @@ namespace PRA_B4_FOTOKIOSK.controller
             var now = DateTime.Now;
             int day = (int)now.DayOfWeek;
 
-            // Calculate the time range
+            // Calculate the time ranges
             DateTime lowerBound = now.AddMinutes(-30);
             DateTime upperBound = now.AddMinutes(-2);
+            DateTime camera1UpperBound = now.AddSeconds(60);
+            DateTime camera2UpperBound = camera1UpperBound.AddSeconds(60);
+
             var directoryPath = @"../../../fotos";
 
-            // Initializeer de lijst met fotos
+            // Lists to hold photos from each camera
+            List<KioskPhoto> camera1Photos = new List<KioskPhoto>();
+            List<KioskPhoto> camera2Photos = new List<KioskPhoto>();
+
+            // Initialize the list of photos
             foreach (string dir in Directory.GetDirectories(directoryPath))
             {
                 var folderName = Path.GetFileName(dir);
@@ -36,8 +41,6 @@ namespace PRA_B4_FOTOKIOSK.controller
 
                 if (folderDayNumber.Length > 1 && int.TryParse(folderDayNumber[0], out int dayNumber) && dayNumber == day)
                 {
-                    List<KioskPhoto> photosForDay = new List<KioskPhoto>();
-
                     foreach (string file in Directory.GetFiles(dir))
                     {
                         string fileName = Path.GetFileNameWithoutExtension(file);
@@ -54,7 +57,16 @@ namespace PRA_B4_FOTOKIOSK.controller
                                 photoTime = photoTime.AddDays(-1);
                             }
 
-                            if (photoTime >= lowerBound && photoTime <= upperBound)
+                            // Add photos to the respective lists based on the time range
+                            if (photoTime >= now && photoTime <= camera1UpperBound)
+                            {
+                                camera1Photos.Add(new KioskPhoto() { Id = 0, Source = file });
+                            }
+                            else if (photoTime > camera1UpperBound && photoTime <= camera2UpperBound)
+                            {
+                                camera2Photos.Add(new KioskPhoto() { Id = 0, Source = file });
+                            }
+                            else if (photoTime >= lowerBound && photoTime <= upperBound)
                             {
                                 PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
                             }
@@ -63,17 +75,40 @@ namespace PRA_B4_FOTOKIOSK.controller
                 }
             }
 
-            // Update de fotos
+            // Combine the lists and order them by photo time
+            PicturesToDisplay.AddRange(camera1Photos);
+            PicturesToDisplay.AddRange(camera2Photos);
+            PicturesToDisplay = PicturesToDisplay.OrderBy(photo => ExtractDateTimeFromFileName(photo.Source)).ToList();
+
+            // Update the photos
             PictureManager.UpdatePictures(PicturesToDisplay);
+        }
+
+        // Extract DateTime from the file name
+        private DateTime ExtractDateTimeFromFileName(string fileName)
+        {
+            var parts = Path.GetFileNameWithoutExtension(fileName).Split('_');
+
+            if (parts.Length >= 3 && int.TryParse(parts[0], out int hour) &&
+                int.TryParse(parts[1], out int minute) &&
+                int.TryParse(parts[2], out int seconds))
+            {
+                return new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, seconds);
+            }
+
+            return DateTime.MinValue; // Return minimum value if parsing fails
         }
 
         // Wordt uitgevoerd wanneer er op de Refresh knop is geklikt
         public void RefreshButtonClick()
         {
-            // You can add code here to refresh the photo display if needed
+            // Clear the current list of pictures and reload
+            PicturesToDisplay.Clear();
+            Start();
         }
     }
 }
+
 
 
 
