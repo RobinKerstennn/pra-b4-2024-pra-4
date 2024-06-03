@@ -12,7 +12,7 @@ namespace PRA_B4_FOTOKIOSK.controller
         // De window die we laten zien op het scherm
         public static Home Window { get; set; }
 
-        // De lijst met fotos die we laten zien
+        // De lijst met foto's die we laten zien
         public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
 
         // Start methode die wordt aangeroepen wanneer de foto pagina opent.
@@ -29,9 +29,8 @@ namespace PRA_B4_FOTOKIOSK.controller
 
             var directoryPath = @"../../../fotos";
 
-            // Lists to hold photos from each camera
-            List<KioskPhoto> camera1Photos = new List<KioskPhoto>();
-            List<KioskPhoto> camera2Photos = new List<KioskPhoto>();
+            // Dictionary to hold paired photos
+            Dictionary<string, List<KioskPhoto>> pairedPhotos = new Dictionary<string, List<KioskPhoto>>();
 
             // Initialize the list of photos
             foreach (string dir in Directory.GetDirectories(directoryPath))
@@ -46,9 +45,10 @@ namespace PRA_B4_FOTOKIOSK.controller
                         string fileName = Path.GetFileNameWithoutExtension(file);
                         var parts = fileName.Split('_');
 
-                        if (parts.Length >= 3 && int.TryParse(parts[0], out int hour) &&
+                        if (parts.Length >= 4 && int.TryParse(parts[0], out int hour) &&
                             int.TryParse(parts[1], out int minute) &&
-                            int.TryParse(parts[2], out int seconds))
+                            int.TryParse(parts[2], out int seconds) &&
+                            int.TryParse(parts[3], out int id))
                         {
                             DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, seconds);
 
@@ -57,27 +57,25 @@ namespace PRA_B4_FOTOKIOSK.controller
                                 photoTime = photoTime.AddDays(-1);
                             }
 
-                            // Add photos to the respective lists based on the time range
-                            if (photoTime >= now && photoTime <= camera1UpperBound)
+                            // Create a KioskPhoto object
+                            KioskPhoto photo = new KioskPhoto() { Id = id, Source = file };
+
+                            // Add the photo to the paired photos dictionary based on the ID
+                            if (!pairedPhotos.ContainsKey(photoTime.ToString("yyyyMMddHHmm") + "_" + id))
                             {
-                                camera1Photos.Add(new KioskPhoto() { Id = 0, Source = file });
+                                pairedPhotos[photoTime.ToString("yyyyMMddHHmm") + "_" + id] = new List<KioskPhoto>();
                             }
-                            else if (photoTime > camera1UpperBound && photoTime <= camera2UpperBound)
-                            {
-                                camera2Photos.Add(new KioskPhoto() { Id = 0, Source = file });
-                            }
-                            else if (photoTime >= lowerBound && photoTime <= upperBound)
-                            {
-                                PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
-                            }
+                            pairedPhotos[photoTime.ToString("yyyyMMddHHmm") + "_" + id].Add(photo);
                         }
                     }
                 }
             }
 
-            // Combine the lists and order them by photo time
-            PicturesToDisplay.AddRange(camera1Photos);
-            PicturesToDisplay.AddRange(camera2Photos);
+            // Flatten the dictionary into the PicturesToDisplay list and order them by photo time
+            foreach (var photoPair in pairedPhotos.Values)
+            {
+                PicturesToDisplay.AddRange(photoPair.OrderBy(photo => ExtractDateTimeFromFileName(photo.Source)));
+            }
             PicturesToDisplay = PicturesToDisplay.OrderBy(photo => ExtractDateTimeFromFileName(photo.Source)).ToList();
 
             // Update the photos
@@ -108,6 +106,7 @@ namespace PRA_B4_FOTOKIOSK.controller
         }
     }
 }
+
 
 
 
