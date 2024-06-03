@@ -48,7 +48,7 @@ public class PhotoManager
 
                             if (photoTime >= lowerBound && photoTime <= upperBound)
                             {
-                                // PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
                             }
                         }
                     }
