@@ -155,14 +155,16 @@ namespace PRA_B4_FOTOKIOSK.controller
                }
             }
             
-            ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}");
+            ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}"); 
+            double price = totalPrice;
+            
         }
 
         public void SaveButtonClick()
         {
-            string filePath = @"../text.txt"; // Specify the file path
+            string filePath = @"../../../text.txt"; // Specify the file path
             string number = Convert.ToString(totalPrice); // Specify the text content
-            string content = $"{countMok} mokken {countFoto} fotos {countTshirt} shirts, inkomen {number}\n";
+            string content = $"{countMok} mokken {countFoto} fotos {countTshirt} shirts, inkomen {totalPrice}\n";
             File.AppendAllText(filePath, content); // Append the content to the file
         }
 

@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
-    public class KioskPhoto
+    /*public class KioskPhoto
     {
         public string FilePath { get; set; }
-    }
+    }*/
     public class SearchController
     {
         
@@ -58,7 +58,7 @@ namespace PRA_B4_FOTOKIOSK.controller
                                 
                                 if (IsImageFile(file))
                                 {
-                                   PicturesToDisplay.Add(new KioskPhoto { FilePath = file });
+                                   PicturesToDisplay.Add(new KioskPhoto { Id = 0, Source = file });
                                 }
                             }
                         }

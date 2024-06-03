@@ -19,8 +19,8 @@ namespace PRA_B4_FOTOKIOSK.controller
 
         // De lijst met fotos die we laten zien
         public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
-        
-        
+
+
         // Start methode die wordt aangeroepen wanneer de foto pagina opent.
         public void Start()
         {
@@ -40,12 +40,12 @@ namespace PRA_B4_FOTOKIOSK.controller
                  * \fotos\0_Zondag
                  */
                 var folderName = Path.GetFileName(dir);
-                var folderDayNumber = folderName.Split('_' );
+                var folderDayNumber = folderName.Split('_');
                 /*string fileName = Path.GetFileNameWithoutExtension(@"../../../fotos");
                 var parts = fileName.Split("_");*/
 
 
-                
+
                 if (folderDayNumber.Length > 1)
                 {
                     int dayNumber;
@@ -67,7 +67,8 @@ namespace PRA_B4_FOTOKIOSK.controller
                                         int.TryParse(parts[1], out int minute) &&
                                         int.TryParse(parts[2], out int seconds))
                                     {
-                                        DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, seconds);
+                                        DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute,
+                                            seconds);
 
                                         if (photoTime > now)
                                         {
@@ -79,28 +80,38 @@ namespace PRA_B4_FOTOKIOSK.controller
                                             PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
                                         }
                                     }
+                                  
                                 }
                             }
                         }
+                   
                     {
-                       
+
                     }
                 }
-                
+
             }
 
-                // Update de fotos
-                PictureManager.UpdatePictures(PicturesToDisplay);
         }
-
-        // Wordt uitgevoerd wanneer er op de Refresh knop is geklikt
         public void RefreshButtonClick()
         {
-            
+                        
         }
-
     }
 }
+
+// Update de fotos
+              //  PictureManager.UpdatePictures(PicturesToDisplay);
+    //   }
+
+        // Wordt uitgevoerd wanneer er op de Refresh knop is geklikt
+        //public void RefreshButtonClick()
+      //  {
+            
+    //    }
+
+  //  }
+//}
 
 
 
@@ -111,7 +122,7 @@ namespace PRA_B4_FOTOKIOSK.controller
       //  public static Home Window { get; set; }
 
         // The list of photos to display
-        //public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
+      //  public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
 
         // Start method that is called when the photo page opens.
         //public void Start()
@@ -119,37 +130,37 @@ namespace PRA_B4_FOTOKIOSK.controller
           //  var now = DateTime.Now;
           //  int day = (int)now.DayOfWeek;
           //  DateTime lowerBound = now.AddMinutes(-30);
-           // DateTime upperBound = now.AddMinutes(-2);
-           // var directoryPath = @"../../../fotos";
+          //  DateTime upperBound = now.AddMinutes(-2);
+          //  var directoryPath = @"../../../fotos";
 
             // Initialize the list of photos
             // WARNING. WITHOUT FILTER THIS LOADS EVERYTHING!
-            //foreach (string dir in Directory.GetDirectories(directoryPath))
-            //{
-              //  var folderName = Path.GetFileName(dir);
-                //var folderDayNumber = folderName.Split('_');
+          //  foreach (string dir in Directory.GetDirectories(directoryPath))
+          //  {
+               // var folderName = Path.GetFileName(dir);
+               // var folderDayNumber = folderName.Split('_');
 
                 //if (folderDayNumber.Length > 1 && int.TryParse(folderDayNumber[0], out int dayNumber) && dayNumber == day)
-                //{
-                  //  foreach (string file in Directory.GetFiles(dir))
-                    //{
-                      //  var fileNameParts = Path.GetFileNameWithoutExtension(file).Split('_');
-                        //if (fileNameParts.Length >= 3 && int.TryParse(fileNameParts[0], out int hour) &&
-                          //  int.TryParse(fileNameParts[1], out int minute) && int.TryParse(fileNameParts[2], out int second))
-                        //{
-                          //  Date Time photoTime = new Date Time(now.Year, now.Month, now.Day, hour, minute, second);
+              //  {
+            //        foreach (string file in Directory.GetFiles(dir))
+          //          {
+        //                var fileNameParts = Path.GetFileNameWithoutExtension(file).Split('_');
+      //                  if (fileNameParts.Length >= 3 && int.TryParse(fileNameParts[0], out int hour) &&
+    //                        int.TryParse(fileNameParts[1], out int minute) && int.TryParse(fileNameParts[2], out int second))
+  //                      {
+//                            DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, second);
 
-                           // if (photoTime > now)
-                            //{
-                           //     photoTime = photoTime.AddDays(-1);
+      //                      if (photoTime > now)
+    //                        {
+  //                              photoTime = photoTime.AddDays(-1);
 //                            }
 
 //if (photoTime >= lowerBound && photoTime <= upperBound)
 //{
-// PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
-//                           }
-//                     }
-//               }
+ //PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+         //                  }
+       //              }
+     //          }
 
 // Executed when the Refresh button is clicked
 //public void RefreshButtonClick()
@@ -157,3 +168,4 @@ namespace PRA_B4_FOTOKIOSK.controller
 //}
     
 
+//}
