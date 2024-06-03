@@ -15,12 +15,12 @@ namespace PRA_B4_FOTOKIOSK.controller
 {
     public class ShopController
     {
-        
-        
+
+
         // Maak een nieuwe lijst met OrderedProducts
         // Wanneer een items wordt besteld (AddButtonClick) voeg een nieuwe OrderedProduct toe aan de lijst
         // UpdateReceiptEnPrice aanpassen zodat de bon print
-        
+
         int countMok = 0;
         int countTshirt = 0;
         int countFoto = 0;
@@ -28,25 +28,25 @@ namespace PRA_B4_FOTOKIOSK.controller
         List<OrderdProduct> chosenProducts = new List<OrderdProduct>();
         public void Cashier()
         {
-            
-                //product lijsten maken
-                OrderdProduct order = new OrderdProduct(1, "Foto", 0, 2.55);
-                OrderdProduct order2 = new OrderdProduct(1, "Mok", 0, 49.99);
-                OrderdProduct order3 = new OrderdProduct(1, "Tshirt", 0, 499.99);
-                
-                Console.WriteLine("Wil je foto producten??");
-                string product = Console.ReadLine();
-                if (product == "ja")
-                {
-                    // vragen aantal foto's
-                    order.AddProduct();
-                    order2.AddProduct();
-                    order3.AddProduct();
-                    double totalPrice = order.getTotalPrice() + order2.getTotalPrice() + order3.getTotalPrice();
-                    Console.WriteLine($"Je moet totaal {totalPrice} betalen.");
 
-                }
+            //product lijsten maken
+            OrderdProduct order = new OrderdProduct(1, "Foto", 0, 2.55);
+            OrderdProduct order2 = new OrderdProduct(1, "Mok", 0, 49.99);
+            OrderdProduct order3 = new OrderdProduct(1, "Tshirt", 0, 499.99);
+
+            Console.WriteLine("Wil je foto producten??");
+            string product = Console.ReadLine();
+            if (product == "ja")
+            {
+                // vragen aantal foto's
+                order.AddProduct();
+                order2.AddProduct();
+                order3.AddProduct();
+                double totalPrice = order.getTotalPrice() + order2.getTotalPrice() + order3.getTotalPrice();
+                Console.WriteLine($"Je moet totaal {totalPrice} betalen.");
+
             }
+        }
 
         public static Home Window { get; set; }
 
@@ -63,15 +63,15 @@ namespace PRA_B4_FOTOKIOSK.controller
             ShopManager.Products.Add(new KioskProduct() { Name = "Foto 10x15" });
             ShopManager.Products.Add(new KioskProduct() { Name = "Mok" });
             ShopManager.Products.Add(new KioskProduct() { Name = "Tshirt" });
-            
+
             // Update dropdown met producten
             ShopManager.UpdateDropDownProducts();
 
 
-            
+
         }
 
-        
+
         public void AddButtonClick()
         {
 
@@ -92,7 +92,7 @@ namespace PRA_B4_FOTOKIOSK.controller
         public void ResetButtonClick()
         {
             chosenProducts.Clear();
-             totalPrice = 0;
+            totalPrice = 0;
             //UpdateReceiptAndPrice();
             ShopManager.SetShopReceipt($"totale price is {totalPrice} euro");
         }
@@ -134,16 +134,17 @@ namespace PRA_B4_FOTOKIOSK.controller
                     double totaal = chosenProduct.Total * 49.99;
                     totalPrice += totaal;
                     countMok += chosenProduct.Total;
+
                     ShopManager.AddShopReceipt($"{chosenProduct.Total} {chosenProduct.ProductName}");
-                    
                 }
+
                 if (chosenProduct.ProductName == "Tshirt")
                 {
                     double totaal = chosenProduct.Total * 499.99;
                     totalPrice += totaal;
                     countTshirt += chosenProduct.Total;
+
                     ShopManager.AddShopReceipt($"{chosenProduct.Total} {chosenProduct.ProductName}");
-                    
                 }
                 if (chosenProduct.ProductName == "Foto 10x15")
                 {
@@ -151,15 +152,11 @@ namespace PRA_B4_FOTOKIOSK.controller
                     totalPrice += totaal;
                     countFoto += chosenProduct.Total;
                     ShopManager.AddShopReceipt($"{chosenProduct.Total} {chosenProduct.ProductName}");
-                    
-               }
+                }
             }
-            
-            ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}"); 
-            double price = totalPrice;
-            
-        }
 
+            ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}");
+        }
         public void SaveButtonClick()
         {
             string filePath = @"../../../text.txt"; // Specify the file path
@@ -167,12 +164,15 @@ namespace PRA_B4_FOTOKIOSK.controller
             string content = $"{countMok} mokken {countFoto} fotos {countTshirt} shirts, inkomen {totalPrice}\n";
             File.AppendAllText(filePath, content); // Append the content to the file
         }
+    }
+}
 
-        }
+
+        
 
            
 
-        }
+        
         
 
    

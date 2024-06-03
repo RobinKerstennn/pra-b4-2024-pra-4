@@ -3,78 +3,101 @@ using PRA_B4_FOTOKIOSK.models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
-    /*public class KioskPhoto
-    {
-        public string FilePath { get; set; }
-    }*/
     public class SearchController
     {
-        
-        // De window die we laten zien op het scherm
         public static Home Window { get; set; }
-        
         public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
-        
-        // Start methode die wordt aangeroepen wanneer de zoek pagina opent.
+
         public void Start()
         {
-       
-            ShopManager.Instance = Window;
-
-
-            // Update de fotos
-            
+            SearchManager.Instance = Window;
+            // You can add any initialization logic here if needed
         }
 
-        // Wordt uitgevoerd wanneer er op de Zoeken knop is geklikt
         public void SearchButtonClick()
         {
-            int day;
-            if (int.TryParse(SearchManager.GetSearchInput(), out day))
+            try
             {
-                // Initializeer de lijst met foto's
-                //    SearchManager.bbjb
-
-
-                // Loop door de directories om foto's te laden
-                foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
+                var searchTimeInput = SearchManager.GetSearchInput();
+                if (DateTime.TryParseExact(searchTimeInput, "HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime searchTime))
                 {
-                    var folderName = Path.GetFileName(dir);
-                    var folderDayNumber = folderName.Split('_');
+                    var directoryPath = @"../../../fotos";
+                    bool photoFound = false;
 
-                    if (folderDayNumber.Length > 1)
+                    foreach (string dir in Directory.GetDirectories(directoryPath))
                     {
-                        int dayNumber;
-                        if (int.TryParse(folderDayNumber[0], out dayNumber) && dayNumber == day)
+                        foreach (string file in Directory.GetFiles(dir, "*.jpg"))
                         {
-                            foreach (string file in Directory.GetFiles(dir))
+                            string fileName = Path.GetFileNameWithoutExtension(file);
+                            if (fileName.Length >= 8 && int.TryParse(fileName.Substring(0, 2), out int hour) &&
+                                int.TryParse(fileName.Substring(3, 2), out int minute) &&
+                                int.TryParse(fileName.Substring(6, 2), out int second))
                             {
-                                
-                                if (IsImageFile(file))
+                                DateTime photoTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
+                                if (photoTime == searchTime)
                                 {
-                                   PicturesToDisplay.Add(new KioskPhoto { Id = 0, Source = file });
+                                    ShowPhoto(file);
+                                    photoFound = true;
+                                    break;
                                 }
                             }
                         }
+
+                        if (photoFound)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (!photoFound)
+                    {
+                        Console.WriteLine("No photo found for the given time.");
                     }
                 }
-                
-
-                // Update de foto's op het scherm
-                //   UpdateDisplayedPictures();
+                else
+                {
+                    Console.WriteLine("Invalid time format. Please use 'HH:mm:ss'.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in SearchButtonClick: " + ex.Message);
             }
         }
+
+        private static void ShowPhoto(string filePath)
+        {
+            try
+            {
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.UriSource = new Uri(filePath);
+                image.EndInit();
+
+                if (SearchManager.Instance != null && SearchManager.Instance.imgBig != null)
+                {
+                    SearchManager.Instance.imgBig.Source = image;
+                }
+                else
+                {
+                    Console.WriteLine("SearchManager.Instance or imgBig is null. Ensure they are properly initialized.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in ShowPhoto: " + ex.Message);
+            }
+        }
+
         public bool IsImageFile(string file)
         {
             string extension = Path.GetExtension(file).ToLower();
             return extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".bmp";
         }
-
     }
 }
