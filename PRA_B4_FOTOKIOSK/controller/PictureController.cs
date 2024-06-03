@@ -12,56 +12,102 @@ using System.Threading.Tasks;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
-public class PhotoManager
-{
-    public void Start()
+
+
+    public class PictureController
     {
-        try
+        // De window die we laten zien op het scherm
+        public static Home Window { get; set; }
+
+
+        // De lijst met fotos die we laten zien
+        public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
+        
+        
+        // Start methode die wordt aangeroepen wanneer de foto pagina opent.
+        public void Start()
         {
             var now = DateTime.Now;
             int day = (int)now.DayOfWeek;
+
             DateTime lowerBound = now.AddMinutes(-30);
             DateTime upperBound = now.AddMinutes(-2);
-            var directoryPath = @"../../../fotos";
 
-            // Initialize the list of photos
-            foreach (string dir in Directory.GetDirectories(directoryPath))
+            // Initializeer de lijst met fotos
+            // WAARSCHUWING. ZONDER FILTER LAADT DIT ALLES!
+            // foreach is een for-loop die door een array loopt
+            foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
             {
+                /**
+                 * dir string is de map waar de fotos in staan. Bijvoorbeeld:
+                 * \fotos\0_Zondag
+                 */
                 var folderName = Path.GetFileName(dir);
-                var folderDayNumber = folderName.Split('_');
+                var folderDayNumber = folderName.Split('_' );
+                /*string fileName = Path.GetFileNameWithoutExtension(@"../../../fotos");
+                var parts = fileName.Split("_");*/
 
-                if (folderDayNumber.Length > 1 && int.TryParse(folderDayNumber[0], out int dayNumber) && dayNumber == day)
+
+                
+                if (folderDayNumber.Length > 1)
                 {
-                    foreach (string file in Directory.GetFiles(dir))
-                    {
-                        var fileNameParts = Path.GetFileNameWithoutExtension(file).Split('_');
-                        if (fileNameParts.Length >= 3 && int.TryParse(fileNameParts[0], out int hour) &&
-                            int.TryParse(fileNameParts[1], out int minute) && int.TryParse(fileNameParts[2], out int second))
+                    int dayNumber;
+                    if (int.TryParse(folderDayNumber[0], out dayNumber))
+                        if (dayNumber == day)
                         {
-                            DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, second);
-
-                            if (photoTime > now)
+                            foreach (string file in Directory.GetFiles(dir))
                             {
-                                photoTime = photoTime.AddDays(-1);
-                            }
+                                /**
+                                 * file string is de file van de foto. Bijvoorbeeld:
+                                 * \fotos\0_Zondag\10_05_30_id8824.jpg
+                                 */
+                                string fileName = Path.GetFileNameWithoutExtension(file);
+                                var parts = fileName.Split("_");
 
-                            if (photoTime >= lowerBound && photoTime <= upperBound)
-                            {
-                                // PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                if (parts.Length > 0)
+                                {
+                                    if (int.TryParse(parts[0], out int hour) &&
+                                        int.TryParse(parts[1], out int minute) &&
+                                        int.TryParse(parts[2], out int seconds))
+                                    {
+                                        DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, seconds);
+
+                                        if (photoTime > now)
+                                        {
+                                            photoTime = photoTime.AddDays(-1);
+                                        }
+
+                                        if (photoTime >= lowerBound && photoTime <= upperBound)
+                                        {
+                                            PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                        }
+                                    }
+                                }
                             }
                         }
+                    {
+                       
                     }
                 }
+                
             }
-            // Update the photos
-            // PictureManager.UpdatePictures(PicturesToDisplay);
+
+                // Update de fotos
+                PictureManager.UpdatePictures(PicturesToDisplay);
         }
-        catch (Exception ex)
+
+        // Wordt uitgevoerd wanneer er op de Refresh knop is geklikt
+        public void RefreshButtonClick()
         {
-            Console.WriteLine("Error in Start method: " + ex.Message);
+            
         }
+
     }
 }
+
+
+
+
     //public class PictureController
     //{
         // The window displayed on the screen
@@ -99,7 +145,7 @@ public class PhotoManager
                            // if (photoTime > now)
                             //{
                            //     photoTime = photoTime.AddDays(-1);
-                            }
+//                            }
 
 //if (photoTime >= lowerBound && photoTime <= upperBound)
 //{

@@ -9,78 +9,75 @@ using System.Threading.Tasks;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
-     try
+    public class KioskPhoto
+    {
+        public string FilePath { get; set; }
+    }
+    public class SearchController
+    {
+        
+        // De window die we laten zien op het scherm
+        public static Home Window { get; set; }
+        
+        public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
+        
+        // Start methode die wordt aangeroepen wanneer de zoek pagina opent.
+        public void Start()
         {
-            // Controleer of SearchManager.Instance niet null is voordat je het gebruikt
-            if (SearchManager.Instance != null && !string.IsNullOrEmpty(time))
-            {
-                // Parse de invoertijdreeks naar een DateTime-object
-                if (DateTime.TryParseExact(time, "HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime searchTime))
-                {
-                    string directoryPath = @"C:\Your\Photo\Directory";
+       
+            ShopManager.Instance = Window;
 
-                    // Zoek naar foto's in de map
-                    bool photoFound = false;
-                    foreach (string file in Directory.GetFiles(directoryPath, "*.jpg"))
+
+            // Update de fotos
+            
+        }
+
+        // Wordt uitgevoerd wanneer er op de Zoeken knop is geklikt
+        public void SearchButtonClick()
+        {
+            int day;
+            if (int.TryParse(SearchManager.GetSearchInput(), out day))
+            {
+                // Initializeer de lijst met foto's
+                //    SearchManager.bbjb
+
+
+                // Loop door de directories om foto's te laden
+                foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
+                {
+                    var folderName = Path.GetFileName(dir);
+                    var folderDayNumber = folderName.Split('_');
+
+                    if (folderDayNumber.Length > 1)
                     {
-                        // Extraheren van de tijd uit de bestandsnaam
-                        string fileName = Path.GetFileNameWithoutExtension(file);
-                        if (fileName.Length >= 8 && int.TryParse(fileName.Substring(0, 2), out int hour) &&
-                            int.TryParse(fileName.Substring(3, 2), out int minute) &&
-                            int.TryParse(fileName.Substring(6, 2), out int second))
+                        int dayNumber;
+                        if (int.TryParse(folderDayNumber[0], out dayNumber) && dayNumber == day)
                         {
                             DateTime photoTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
 
                             // Controleer of de fototijd overeenkomt met de zoekopdrachtijd
                             if (photoTime == searchTime)
                             {
-                                // Laat de foto zien
-                                ShowPhoto(file);
-                                photoFound = true;
-                                break; // Stop met zoeken nadat de eerste overeenkomende foto is gevonden
+                                
+                                if (IsImageFile(file))
+                                {
+                                   PicturesToDisplay.Add(new KioskPhoto { FilePath = file });
+                                }
                             }
                         }
                     }
+                }
+                
 
-                    if (!photoFound)
-                    {
-                        Console.WriteLine("Geen foto gevonden voor het opgegeven tijdstip.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Ongeldige tijdnotatie. Gebruik alstublieft 'HH:mm:ss'.");
-                }
-            }
-            else
-            {
-                // SearchManager.Instance of time is null of leeg, toon het juiste bericht
-                Console.WriteLine("SearchManager.Instance of time is null of leeg. Zorg ervoor dat ze correct zijn geïnitialiseerd.");
+                // Update de foto's op het scherm
+                //   UpdateDisplayedPictures();
             }
         }
-        catch (Exception ex)
+        public bool IsImageFile(string file)
         {
-            Console.WriteLine("Er is een fout opgetreden: " + ex.Message);
+            string extension = Path.GetExtension(file).ToLower();
+            return extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".bmp";
         }
-    }
 
-    private static void ShowPhoto(string filePath)
-    {
-        // Laad de afbeelding en laat deze zien
-        BitmapImage image = new BitmapImage();
-        image.BeginInit();
-        image.CacheOption = BitmapCacheOption.OnLoad;
-        image.UriSource = new Uri(filePath);
-        image.EndInit();
-
-        // Controleer of Image control is geïnitialiseerd en stel de bron in
-        if (SearchManager.Instance != null && SearchManager.Instance.imgBig != null)
-        {
-            SearchManager.Instance.imgBig.Source = image;
-        }
-        else
-        {
-            Console.WriteLine("SearchManager.Instance of imgBig is null. Zorg ervoor dat ze correct zijn geïnitialiseerd.");
-        }
     }
 }

@@ -30,8 +30,8 @@ namespace PRA_B4_FOTOKIOSK.controller
         {
             
                 //product lijsten maken
-                OrderdProduct order = new OrderdProduct(1, "Foto", 0, 5.59);
-                OrderdProduct order2 = new OrderdProduct(1, "Mok", 0, 4.99);
+                OrderdProduct order = new OrderdProduct(1, "Foto", 0, 2.55);
+                OrderdProduct order2 = new OrderdProduct(1, "Mok", 0, 49.99);
                 OrderdProduct order3 = new OrderdProduct(1, "Tshirt", 0, 499.99);
                 
                 Console.WriteLine("Wil je foto producten??");
@@ -131,28 +131,30 @@ namespace PRA_B4_FOTOKIOSK.controller
             {
                 if (chosenProduct.ProductName == "Mok")
                 {
-                    double totaal = chosenProduct.Total * 4.99;
+                    double totaal = chosenProduct.Total * 49.99;
                     totalPrice += totaal;
                     countMok += chosenProduct.Total;
+                    ShopManager.AddShopReceipt($"{chosenProduct.Total} {chosenProduct.ProductName}");
                     
-
                 }
                 if (chosenProduct.ProductName == "Tshirt")
                 {
                     double totaal = chosenProduct.Total * 499.99;
                     totalPrice += totaal;
                     countTshirt += chosenProduct.Total;
+                    ShopManager.AddShopReceipt($"{chosenProduct.Total} {chosenProduct.ProductName}");
                     
                 }
                 if (chosenProduct.ProductName == "Foto 10x15")
                 {
-                    double totaal = chosenProduct.Total * 5.59;
+                    double totaal = chosenProduct.Total * 2.59;
                     totalPrice += totaal;
                     countFoto += chosenProduct.Total;
+                    ShopManager.AddShopReceipt($"{chosenProduct.Total} {chosenProduct.ProductName}");
                     
                }
             }
-
+            
             ShopManager.SetShopReceipt($"Eindbedrag\n€{totalPrice}");
         }
 
