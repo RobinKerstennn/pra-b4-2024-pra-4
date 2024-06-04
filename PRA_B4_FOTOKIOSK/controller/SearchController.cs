@@ -3,105 +3,75 @@ using PRA_B4_FOTOKIOSK.models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Media.Imaging;
+using System.Linq;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
     public class SearchController
     {
-        public static Home Window { get; set; }
-        public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
+        // Het venster dat we op het scherm tonen
+        public Home Window { get; set; }
 
-        public void Start()
+        // De lijst met foto's die we laten zien
+        public List<KioskPhoto> PicturesToDisplay { get; set; }
+
+        // Constructor
+        public SearchController(Home window)
         {
-            SearchManager.Instance = Window;
-            // You can add any initialization logic here if needed
+            Window = window;
+            PicturesToDisplay = new List<KioskPhoto>();
+            LoadSamplePhotos();
         }
 
+        // Methode die wordt aangeroepen wanneer de zoekknop wordt ingedrukt
         public void SearchButtonClick()
         {
-            string input = SearchManager.GetSearchInput();
-            DateTime inputValue;
-            string[] formats = { "MM/dd/yyyy", "dd-MM-yyyy" }; // example formats
+            ImageSearch = SearchManager.GetSearchInput();
+            SearchManager.SetPicture(ImageSearch);
+        }
 
-            bool isValid = DateTime.TryParseExact(input, formats, null, System.Globalization.DateTimeStyles.None, out inputValue);
-            try
+        // Methode om foto's te zoeken op basis van datum en tijd
+       
+
+        // Methode om foto's op het scherm te tonen
+        private void DisplayPhotos(List<KioskPhoto> photos)
+        {
+            if (photos.Count > 0)
             {
-                var searchTimeInput = SearchManager.GetSearchInput();
-                if (DateTime.TryParseExact(searchTimeInput, "HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime searchTime))
-                {
-                    var directoryPath = @"../../../fotos";
-                    bool photoFound = false;
-
-                    foreach (string dir in Directory.GetDirectories(directoryPath))
-                    {
-                        foreach (string file in Directory.GetFiles(dir, "*.jpg"))
-                        {
-                            string fileName = Path.GetFileNameWithoutExtension(file);
-                            if (fileName.Length >= 8 && int.TryParse(fileName.Substring(0, 2), out int hour) &&
-                                int.TryParse(fileName.Substring(3, 2), out int minute) &&
-                                int.TryParse(fileName.Substring(6, 2), out int second))
-                            {
-                                DateTime photoTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
-                                if (photoTime == inputValue) 
-                                {
-                                    PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
-                                    
-                                }
-                            }
-                        }
-
-                        if (photoFound)
-                        {
-                            break;
-                        }
-                    }
-
-                    if (!photoFound)
-                    {
-                        Console.WriteLine("No photo found for the given time.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Invalid time format. Please use 'HH:mm:ss'.");
-                }
+                SearchManager.SetPicture(photos[0].FilePath);
+                Window.lbSearchInfo.Content = $"Gevonden foto's: {photos.Count}";
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("Error in SearchButtonClick: " + ex.Message);
+                SearchManager.SetPicture(null);
+                Window.lbSearchInfo.Content = "Geen foto's gevonden.";
             }
         }
 
-        private static void ShowPhoto(string filePath)
+        // Methode om voorbeeldfoto's te laden vanuit een map
+        private void LoadSamplePhotos()
         {
-            try
-            {
-                BitmapImage image = new BitmapImage();
-                image.BeginInit();
-                image.CacheOption = BitmapCacheOption.OnLoad;
-                image.UriSource = new Uri(filePath);
-                image.EndInit();
+            string directoryPath = Path.GetFullPath(@"../../../fotos");
 
-                if (SearchManager.Instance != null && SearchManager.Instance.imgBig != null)
-                {
-                    SearchManager.Instance.imgBig.Source = image;
-                }
-                else
-                {
-                    Console.WriteLine("SearchManager.Instance or imgBig is null. Ensure they are properly initialized.");
-                }
-            }
-            catch (Exception ex)
+            if (!Directory.Exists(directoryPath))
             {
-                Console.WriteLine("Error in ShowPhoto: " + ex.Message);
+                Console.WriteLine($"Directory '{directoryPath}' does not exist.");
+                return;
             }
-        }
 
-        public bool IsImageFile(string file)
-        {
-            string extension = Path.GetExtension(file).ToLower();
-            return extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".bmp";
+            string[] photoFiles = Directory.GetFiles(directoryPath, "*.jpg");
+
+            foreach (string filePath in photoFiles)
+            {
+                DateTime captureDateTime = File.GetCreationTime(filePath);
+
+                PicturesToDisplay.Add(new KioskPhoto
+                {
+                    Id = 0, Source = file
+                });
+            }
         }
     }
 }
+
+
