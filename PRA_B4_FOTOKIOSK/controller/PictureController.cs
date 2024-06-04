@@ -4,24 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-
 
 namespace PRA_B4_FOTOKIOSK.controller
-{ 
-
+{
     public class PictureController
     {
         // De window die we laten zien op het scherm
         public static Home Window { get; set; }
 
-
-        // De lijst met fotos die we laten zien
+        // De lijst met foto's die we laten zien
         public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
-
 
         // Start methode die wordt aangeroepen wanneer de foto pagina opent.
         public void Start()
@@ -29,33 +21,38 @@ namespace PRA_B4_FOTOKIOSK.controller
             var now = DateTime.Now;
             int day = (int)now.DayOfWeek;
 
+            // Calculate the time ranges
             DateTime lowerBound = now.AddMinutes(-30);
             DateTime upperBound = now.AddMinutes(-2);
+            DateTime camera1UpperBound = now.AddSeconds(60);
+            DateTime camera2UpperBound = camera1UpperBound.AddSeconds(60);
 
-            // Initializeer de lijst met fotos
-            // WAARSCHUWING. ZONDER FILTER LAADT DIT ALLES!
-            // foreach is een for-loop die door een array loopt
-            foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
+            var directoryPath = @"../../../fotos";
+
+            // Dictionary to hold paired photos
+            Dictionary<string, List<KioskPhoto>> pairedPhotos = new Dictionary<string, List<KioskPhoto>>();
+
+            // Initialize the list of photos
+            foreach (string dir in Directory.GetDirectories(directoryPath))
             {
-                /**
-                 * dir string is de map waar de fotos in staan. Bijvoorbeeld:
-                 * \fotos\0_Zondag
-                 */
                 var folderName = Path.GetFileName(dir);
                 var folderDayNumber = folderName.Split('_');
-                /*string fileName = Path.GetFileNameWithoutExtension(@"../../../fotos");
-                var parts = fileName.Split("_");*/
 
-
-
-                if (folderDayNumber.Length > 1)
+                if (folderDayNumber.Length > 1 && int.TryParse(folderDayNumber[0], out int dayNumber) && dayNumber == day)
                 {
-                    int dayNumber;
-                    if (int.TryParse(folderDayNumber[0], out dayNumber))
+                    foreach (string file in Directory.GetFiles(dir))
                     {
-                        if (dayNumber == day)
+                        string fileName = Path.GetFileNameWithoutExtension(file);
+                        var parts = fileName.Split('_');
+
+                        if (parts.Length >= 4 && int.TryParse(parts[0], out int hour) &&
+                            int.TryParse(parts[1], out int minute) &&
+                            int.TryParse(parts[2], out int seconds) &&
+                            int.TryParse(parts[3], out int id))
                         {
-                            foreach (string file in Directory.GetFiles(dir))
+                            DateTime photoTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, seconds);
+
+                            if (photoTime > now)
                             {
                                 /**
                                  * file string is de file van de foto. Bijvoorbeeld:
@@ -89,13 +86,40 @@ namespace PRA_B4_FOTOKIOSK.controller
                         }
                     }
                 }
-
             }
 
+            // Flatten the dictionary into the PicturesToDisplay list and order them by photo time
+            foreach (var photoPair in pairedPhotos.Values)
+            {
+                PicturesToDisplay.AddRange(photoPair.OrderBy(photo => ExtractDateTimeFromFileName(photo.Source)));
+            }
+            PicturesToDisplay = PicturesToDisplay.OrderBy(photo => ExtractDateTimeFromFileName(photo.Source)).ToList();
+
+            // Update the photos
+            PictureManager.UpdatePictures(PicturesToDisplay);
         }
+
+        // Extract DateTime from the file name
+        private DateTime ExtractDateTimeFromFileName(string fileName)
+        {
+            var parts = Path.GetFileNameWithoutExtension(fileName).Split('_');
+
+            if (parts.Length >= 3 && int.TryParse(parts[0], out int hour) &&
+                int.TryParse(parts[1], out int minute) &&
+                int.TryParse(parts[2], out int seconds))
+            {
+                return new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, seconds);
+            }
+
+            return DateTime.MinValue; // Return minimum value if parsing fails
+        }
+
+        // Wordt uitgevoerd wanneer er op de Refresh knop is geklikt
         public void RefreshButtonClick()
         {
-                        
+            // Clear the current list of pictures and reload
+            PicturesToDisplay.Clear();
+            Start();
         }
     }
 }
