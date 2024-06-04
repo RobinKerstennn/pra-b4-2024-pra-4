@@ -4,74 +4,102 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
     public class SearchController
     {
-        // Het venster dat we op het scherm tonen
-        public Home Window { get; set; }
+        // De window die we laten zien op het scherm
+        public static Home Window { get; set; }
 
-        // De lijst met foto's die we laten zien
-        public List<KioskPhoto> PicturesToDisplay { get; set; }
 
-        // Constructor
-        public SearchController(Home window)
+
+        // Start methode die wordt aangeroepen wanneer de zoek pagina opent.
+        public void Start()
         {
-            Window = window;
-            PicturesToDisplay = new List<KioskPhoto>();
-            LoadSamplePhotos();
+            SearchManager.Instance = Window;
+            //int day;
+            //if (int.TryParse(SearchManager.GetSearchInput(), out day))
+            //{
+            // Initializeer de lijst met foto's
+            //PicturesToDisplay.Clear();
+
+            // Loop door de directories om foto's te laden
+            //foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
+            //{
+            //var folderName = Path.GetFileName(dir);
+            //var folderDayNumber = folderName.Split('_');
+
+            // if (folderDayNumber.Length > 1)
+            //  {
+            //  int dayNumber;
+            //  if (int.TryParse(folderDayNumber[0], out dayNumber) && dayNumber == day)
+            //    {
+            //          foreach (string file in Directory.GetFiles(dir))
+            //            {
+            //                PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+            //                }
+            //              }
+            //            }
+            //          }
+
+            // Update de foto's op het scherm
+            //   UpdateDisplayedPictures();
+            //       }
+
+            // Update de fotos
+
         }
 
-        // Methode die wordt aangeroepen wanneer de zoekknop wordt ingedrukt
+        // Wordt uitgevoerd wanneer er op de Zoeken knop is geklikt
         public void SearchButtonClick()
         {
-            ImageSearch = SearchManager.GetSearchInput();
-            SearchManager.SetPicture(ImageSearch);
-        }
-
-        // Methode om foto's te zoeken op basis van datum en tijd
-       
-
-        // Methode om foto's op het scherm te tonen
-        private void DisplayPhotos(List<KioskPhoto> photos)
-        {
-            if (photos.Count > 0)
+            // Zoeken door de lijst met fotos, naar een foto die string bevat
+            string search = SearchManager.GetSearchInput();
+            foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
             {
-                SearchManager.SetPicture(photos[0].FilePath);
-                Window.lbSearchInfo.Content = $"Gevonden foto's: {photos.Count}";
-            }
-            else
-            {
-                SearchManager.SetPicture(null);
-                Window.lbSearchInfo.Content = "Geen foto's gevonden.";
-            }
-        }
-
-        // Methode om voorbeeldfoto's te laden vanuit een map
-        private void LoadSamplePhotos()
-        {
-            string directoryPath = Path.GetFullPath(@"../../../fotos");
-
-            if (!Directory.Exists(directoryPath))
-            {
-                Console.WriteLine($"Directory '{directoryPath}' does not exist.");
-                return;
-            }
-
-            string[] photoFiles = Directory.GetFiles(directoryPath, "*.jpg");
-
-            foreach (string filePath in photoFiles)
-            {
-                DateTime captureDateTime = File.GetCreationTime(filePath);
-
-                PicturesToDisplay.Add(new KioskPhoto
+                foreach (string file in Directory.GetFiles(dir))
                 {
-                    Id = 0, Source = file
-                });
+                    if (file.Contains(search))
+                    {
+                        SearchManager.SetPicture(file);
+
+                        SearchManager.SetSearchImageInfo(file);
+
+                        
+                            // Haal de bestandsnaam op zonder het pad
+                            string filename = Path.GetFileName(file);
+
+                            // Splits de bestandsnaam op '_', '.'
+                            string[] delen = filename.Split(new char[] { '_', '.' },
+                                StringSplitOptions.RemoveEmptyEntries);
+
+                            if (delen.Length >= 5) // Controleer of er minstens 5 delen zijn
+                            {
+                                // Stel de datum samen
+                                string datum = $"{delen[0]}/{delen[1]}/{delen[2]}";
+                                // Haal het ID op, assuming delen[3] is "id2442"
+                                string ID = delen[3].Substring(2); // Remove the "id" prefix from delen[3]
+
+                                // Gebruik de bestandsnaam
+                                
+
+                                // Print de gegevens
+                                SearchManager.SetSearchImageInfo($"Datum: {datum}\n ID: {ID}\nBestandsnaam: {filename}");
+                            }
+                            
+                        }
+
+                    }
+                }
             }
         }
     }
-}
-
+//}
+                        
+        
+    
 
