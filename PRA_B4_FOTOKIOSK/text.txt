@@ -8,3 +8,4 @@
 3 mokken 2 fotos 1 shirts, inkomen 0
 0 mokken 0 fotos 1 shirts, inkomen 0
 0 mokken 1 fotos 0 shirts, inkomen 2,59
+1 mokken 2 fotos 3 shirts, inkomen 1555,1399999999999 euro
